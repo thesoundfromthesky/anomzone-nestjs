@@ -1,0 +1,34 @@
+<!-- Required Starts -->
+<p-message
+  *ngIf="isInvalid('required')"
+  severity="error"
+  text="required"
+></p-message>
+<!-- Required Ends -->
+
+<!-- Minlength Starts -->
+<p-message
+  *ngIf="isInvalid('minlength') as minlength"
+  severity="error"
+  [text]="
+    'Current length:' +
+    minlength.actualLength +
+    ' is less than minimum length:' +
+    minlength.requiredLength +
+    '.'
+  "
+></p-message>
+<!-- Minlength Ends -->
+<!-- Maxlength starts -->
+<p-message
+  *ngIf="isInvalid('maxlength') as maxlength"
+  severity="error"
+  [text]="
+    'Current length:' +
+    maxlength.actualLength +
+    ' is greater than maximum length:' +
+    maxlength.requiredLength +
+    '.'
+  "
+></p-message>
+<!-- Maxlength Ends -->

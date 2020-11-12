@@ -1,0 +1,20 @@
+<div *ngIf="isLoading$ | async; else layoutTemplate" class="expand">
+  <div class="lds-hourglass"></div>
+</div>
+
+<ng-template #layoutTemplate>
+  <app-layout-topbar></app-layout-topbar>
+
+  <app-layout-content></app-layout-content>
+
+  <app-layout-footer></app-layout-footer>
+</ng-template>
+
+<p-toast
+  *ngIf="{ message: message$ | async } as data"
+  position="bottom-right"
+></p-toast>
+<p-confirmDialog
+  header="Confirmation"
+  icon="pi pi-exclamation-triangle"
+></p-confirmDialog>

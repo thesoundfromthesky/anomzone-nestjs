@@ -1,7 +1,338 @@
 {
   "version": 1,
-  "projects": {},
+  "projects": {
+    "anomzone": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss",
+          "changeDetection": "OnPush"
+        },
+        "@schematics/angular:application": {
+          "strict": true
+        }
+      },
+      "root": "apps/anomzone",
+      "sourceRoot": "apps/anomzone/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/apps/anomzone",
+            "index": "apps/anomzone/src/index.html",
+            "main": "apps/anomzone/src/main.ts",
+            "polyfills": "apps/anomzone/src/polyfills.ts",
+            "tsConfig": "apps/anomzone/tsconfig.app.json",
+            "aot": true,
+            "assets": [
+              "apps/anomzone/src/favicon.ico",
+              "apps/anomzone/src/assets"
+            ],
+            "styles": ["apps/anomzone/src/styles.scss"],
+            "stylePreprocessorOptions": {
+              "includePaths": ["apps/anomzone/src/stylesheets"]
+            },
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/anomzone/src/environments/environment.ts",
+                  "with": "apps/anomzone/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ]
+            },
+            "local": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/anomzone/src/environments/environment.ts",
+                  "with": "apps/anomzone/src/environments/environment.local.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "anomzone:build",
+            "proxyConfig": "apps/anomzone/proxy.conf.js"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "anomzone:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "anomzone:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "apps/anomzone/tsconfig.app.json",
+              "apps/anomzone/tsconfig.spec.json",
+              "apps/anomzone/tsconfig.editor.json"
+            ],
+            "exclude": ["**/node_modules/**", "!apps/anomzone/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/anomzone/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "anomzone-e2e": {
+      "root": "apps/anomzone-e2e",
+      "sourceRoot": "apps/anomzone-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/anomzone-e2e/cypress.json",
+            "tsConfig": "apps/anomzone-e2e/tsconfig.e2e.json",
+            "devServerTarget": "anomzone:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "anomzone:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/anomzone-e2e/tsconfig.e2e.json"],
+            "exclude": ["**/node_modules/**", "!apps/anomzone-e2e/**/*"]
+          }
+        }
+      }
+    },
+    "anomzone-api": {
+      "root": "apps/anomzone-api",
+      "sourceRoot": "apps/anomzone-api/src",
+      "projectType": "application",
+      "prefix": "anomzone-api",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "options": {
+            "outputPath": "dist/apps/anomzone-api",
+            "main": "apps/anomzone-api/src/main.ts",
+            "tsConfig": "apps/anomzone-api/tsconfig.app.json",
+            "assets": ["apps/anomzone-api/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/anomzone-api/src/environments/environment.ts",
+                  "with": "apps/anomzone-api/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "anomzone-api:build"
+          },
+          "configurations": {
+            "debug": {
+              "inspect:": true
+            }
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/anomzone-api/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/anomzone-api/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "util": {
+      "root": "libs/util",
+      "sourceRoot": "libs/util/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/util/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/util/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "typeorm": {
+      "root": "libs/typeorm",
+      "sourceRoot": "libs/typeorm/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/typeorm/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/typeorm/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "config": {
+      "root": "libs/config",
+      "sourceRoot": "libs/config/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/config/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/config/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "middleware": {
+      "root": "libs/middleware",
+      "sourceRoot": "libs/middleware/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/middleware/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/middleware/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "ngxs": {
+      "root": "libs/ngxs",
+      "sourceRoot": "libs/ngxs/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/ngxs/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/ngxs/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "ng-util": {
+      "root": "libs/ng-util",
+      "sourceRoot": "libs/ng-util/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/ng-util/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/ng-util/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    }
+  },
   "cli": {
-    "defaultCollection": "@nrwl/workspace"
-  }
+    "defaultCollection": "@nrwl/angular"
+  },
+  "schematics": {
+    "@nrwl/angular:application": {
+      "unitTestRunner": "jest",
+      "e2eTestRunner": "cypress",
+      "strict": true
+    },
+    "@nrwl/angular:library": {
+      "unitTestRunner": "jest"
+    }
+  },
+  "defaultProject": "anomzone"
 }

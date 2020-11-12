@@ -1,0 +1,24 @@
+<ng-container
+  *ngIf="{
+    mb: mb$ | async,
+    loading: (loading$ | async) || false,
+    delay: (delay$ | async) || 0
+  } as data"
+>
+  <p-button
+    type="button"
+    [styleClass]="'p-raised-button ' + styleClass"
+    [label]="
+      isResponsive
+        ? data.mb
+          ? getLabel(data.delay)
+          : ''
+        : getLabel(data.delay)
+    "
+    [attr.aria-label]="label"
+    [title]="label"
+    [icon]="getIcon(data.delay, data.loading)"
+    (onClick)="cb && cb($event)"
+    [disabled]="canDisable(data.delay, data.loading)"
+  ></p-button>
+</ng-container>

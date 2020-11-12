@@ -1,0 +1,126 @@
+<ng-container
+  *ngIf="{
+    mb: (mb$ | async) || false,
+    loading: (loading$ | async) || false,
+    posts: (posts$ | async) || [[], 0],
+    pageEvent: (pageEvent$ | async) || { first: 0, rows: 20, page: 0 }
+  } as data"
+>
+  <!-- Table Starts-->
+  <p-table
+    #tt
+    styleClass="p-datatable-sm p-datatable-gridlines p-datatable-striped"
+    dataKey="id"
+    [responsive]="true"
+    [rowTrackBy]="trackByFn"
+    [columns]="cols"
+    [rows]="data.pageEvent.rows"
+    [first]="data.pageEvent.first"
+    [value]="data.posts[0]"
+    [lazy]="true"
+    [lazyLoadOnInit]="false"
+    (onLazyLoad)="loadPosts($event)"
+    [paginator]="true"
+    [pageLinks]="10"
+    [showCurrentPageReport]="data.mb"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [loading]="data.loading"
+    [totalRecords]="data.posts[1]"
+    [rowHover]="true"
+  >
+    <!-- Colgroup -->
+    <ng-template pTemplate="colgroup" let-columns>
+      <colgroup *ngIf="data.mb">
+        <col *ngFor="let col of columns" [style.width]="col.width" />
+      </colgroup>
+    </ng-template>
+
+    <!-- Caption Starts-->
+    <ng-template pTemplate="caption">
+      <div class="p-text-capitalize">Zone: {{ pathname }}</div>
+      <div>
+        <a [routerLink]="[pathname, 'write']">
+          <app-button
+            styleClass="p-button-success p-button-sm"
+            label="New"
+            icon="pi pi-plus"
+            [delay]="true"
+            [loading]="true"
+          >
+          </app-button>
+        </a>
+      </div>
+    </ng-template>
+    <!-- Caption Ends -->
+    <!-- Header Starts -->
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th *ngFor="let col of columns">
+          {{ col.header }}
+        </th>
+      </tr>
+    </ng-template>
+    <!-- Header Ends -->
+    <!-- Body Starts-->
+    <ng-template
+      pTemplate="body"
+      let-rowData
+      let-columns="columns"
+      let-rowIndex="rowIndex"
+    >
+      <tr
+        class="rowHeight cursor-pointer rainbow"
+        [routerLink]="[pathname, rowData.id]"
+        routerLinkActive="active-link"
+      >
+        <td
+          *ngFor="let col of columns"
+          [ngSwitch]="col.field"
+          class="p-text-nowrap p-text-truncate"
+        >
+          <span *ngIf="!data.mb" class="p-column-title">{{ col.header }}</span>
+          <ng-container *ngSwitchCase="'title'">
+            {{ rowData.id }}.
+            <span style="color: tomato;">[{{ rowData.commentsCount }}]</span>
+            {{ rowData[col.field] }}
+          </ng-container>
+          <ng-container *ngSwitchCase="'createdAt'">
+            {{ rowData[col.field] | date: 'h:mm:ss a, MMM d, y' }}
+          </ng-container>
+          <ng-container *ngSwitchDefault>
+            {{ rowData[col.field] }}
+          </ng-container>
+        </td>
+      </tr>
+    </ng-template>
+    <!-- Body Ends -->
+
+    <!-- Loading -->
+    <ng-template pTemplate="loadingbody" let-columns="columns">
+      <tr class="rowHeight">
+        <td *ngFor="let col of columns">
+          <div class="loading-text"></div>
+        </td>
+      </tr>
+    </ng-template>
+
+    <!-- Empty Starts -->
+    <ng-template pTemplate="emptymessage" let-columns>
+      <tr>
+        <td [attr.colspan]="columns.length">No records found</td>
+      </tr>
+    </ng-template>
+    <!-- Empty Ends -->
+
+    <!-- Summary Starts-->
+    <ng-template pTemplate="summary">
+      <div>
+        In total there are
+        {{ tt.totalRecords }}
+        posts.
+      </div>
+    </ng-template>
+    <!-- Summary Ends -->
+  </p-table>
+  <!-- Table Ends -->
+</ng-container>

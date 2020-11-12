@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  main:
+    image: anomzone:prod
+    restart: always
+    env_file:
+      - .env.production
+    build:
+      args:
+        - NODE_ENV=${NODE_ENV}
+    ports:
+      - ${APPLICATION_PORT}:${APPLICATION_PORT}

@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  main:
+    image: anomzone:debug
+    command: npm run debug
+    env_file:
+      - .env.development
+    build:
+      target: development
+      args:
+        - NODE_ENV=${NODE_ENV}
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - ${APPLICATION_PORT}:${APPLICATION_PORT}
+      - 9229:9229

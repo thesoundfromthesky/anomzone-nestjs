@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  main:
+    image: anomzone:local
+    restart: always
+    env_file:
+      - .env.local
+    build:
+      args:
+        - NODE_ENV=${NODE_ENV}
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - ${APPLICATION_PORT}:${APPLICATION_PORT}

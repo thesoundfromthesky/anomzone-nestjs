@@ -1,0 +1,76 @@
+<i
+  class="pi pi-reply"
+  style="font-size: 2rem; align-self: flex-start; transform: scaleY(-1)"
+></i>
+<div class="flex-1">
+  <p-card
+    [id]="id"
+    [style]="{
+      backgroundColor: '#2196f34f'
+    }"
+    class="card-flex card-comment p-mb-2"
+    [subheader]="reply.author"
+  >
+    <div class="text-content">{{ rowNumber }}. {{ reply.content }}</div>
+    <p-footer class="p-flex-column p-ai-end">
+      <div>
+        <div>
+          Created at:
+          {{ reply.createdAt | date: "h:mm:ss a, MMM d, y" }}
+        </div>
+        <div>
+          Updated at:
+          {{ reply.updatedAt | date: "h:mm:ss a, MMM d, y" }}
+        </div>
+        <div class="p-text-right">
+          ip:
+          {{ reply.ip }}
+        </div>
+      </div>
+      <div>
+        <div class="p-mt-2 p-text-right">
+          <!-- Buttons Start-->
+          <app-button
+            [styleClass]="
+              (showEdit ? 'p-button-help' : 'p-button-info') + ' p-mr-2'
+            "
+            [label]="showEdit ? 'Close' : 'Edit'"
+            [icon]="showEdit ? 'pi pi-minus' : 'pi pi-pencil'"
+            [cb]="toggleEdit.bind(this)"
+          ></app-button>
+          <app-button
+            [styleClass]="showReply ? 'p-button-help' : ''"
+            [label]="showReply ? 'Close' : 'Reply'"
+            [icon]="showReply ? 'pi pi-minus' : 'pi pi-reply'"
+            [cb]="toggleShowReply.bind(this)"
+          ></app-button>
+          <!-- Buttons End -->
+        </div>
+      </div>
+    </p-footer>
+  </p-card>
+
+  <!-- Edit Replies Starts -->
+  <app-replies-update
+    *ngIf="showEdit"
+    appAnchorScroll
+    [comment]="comment"
+    [rowNumber]="rowNumber"
+    [id]="['replies', 'edit', reply.id].join('-')"
+    class="p-d-block p-mb-2"
+    [reply]="reply"
+    (toggleEdit)="toggleEdit()"
+  >
+  </app-replies-update>
+  <!-- Edit Replies Ends -->
+
+  <!-- Reply Replies Starts -->
+  <app-replies-create
+    *ngIf="showReply"
+    appAnchorScroll
+    [id]="['replies', 'reply', reply.id].join('-')"
+    [reply]="reply"
+    [comment]="comment"
+  ></app-replies-create>
+  <!-- Reply Replies Starts -->
+</div>

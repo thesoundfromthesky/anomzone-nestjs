@@ -15,7 +15,16 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@client/*": ["apps/anomzone/src/*"],
+      "@server/*": ["apps/anomzone-api/src/*"],
+      "@util/*": ["libs/util/src/*"],
+      "@typeorm/*": ["libs/typeorm/src/*"],
+      "@config/*": ["libs/config/src/*"],
+      "@middleware/*": ["libs/middleware/src/*"],
+      "@ngxs/*": ["libs/ngxs/src/*"],
+      "@ng-util/*": ["libs/ng-util/src/*"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

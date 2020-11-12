@@ -1,0 +1,44 @@
+<ng-container *ngIf="post$ | async as post">
+  <p-card
+    class="full-height card-flex p-mb-2"
+    [header]="post.id + '. ' + post.title"
+    [subheader]="post.author"
+  >
+    <div class="text-content">
+      {{ post.content }}
+    </div>
+
+    <p-footer class="p-jc-end">
+      <div>
+        <div>
+          Created at:
+          {{ post.createdAt | date: "h:mm:ss a, MMM d, y" }}
+        </div>
+        <div>
+          Updated at:
+          {{ post.updatedAt | date: "h:mm:ss a, MMM d, y" }}
+        </div>
+        <div class="p-text-right">
+          ip:
+          {{ post.ip }}
+        </div>
+        <div class="p-text-right p-mt-2">
+          <a [routerLink]="[pathname, 'edit']" [state]="{ post: post }">
+            <app-button
+              styleClass="p-button-info"
+              label="Edit"
+              icon="pi pi-pencil"
+              [delay]="true"
+              [loading]="true"
+            >
+            </app-button>
+          </a>
+        </div>
+      </div>
+    </p-footer>
+  </p-card>
+
+  <!-- Comments Starts -->
+  <app-comments> </app-comments>
+  <!-- Comments Ends -->
+</ng-container>

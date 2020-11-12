@@ -1,0 +1,123 @@
+<ng-container *ngIf="{ mb: mb$ | async } as data">
+  <!-- Toolbar Starts -->
+  <p-toolbar>
+    <div class="p-d-flex p-jc-between wrapper">
+      <!-- Toolbar Group Left -->
+      <div class="p-toolbar-group-left">
+        <p-button
+          routerLink="/"
+          type="button"
+          title="Home"
+          aria-label="Home"
+          icon="pi pi-home"
+          styleClass="p-button-text p-button-plain p-button-rounded p-button-lg"
+        ></p-button>
+      </div>
+
+      <!-- Toolbar Group Right -->
+      <div class="p-toolbar-group-right">
+        <ng-container *ngIf="data.mb; else elseTemplate">
+          <ng-container
+            *ngTemplateOutlet="
+              megaMenuTemplate;
+              context: { $implicit: data.mb }
+            "
+          ></ng-container>
+        </ng-container>
+
+        <ng-template #elseTemplate>
+          <p-button
+            styleClass="p-button-text p-button-plain p-button-rounded p-button-lg"
+            type="button"
+            icon="pi pi-list"
+            title="Show Menu"
+            area-label="Show Menu"
+            (onClick)="displaySidebar = true"
+          ></p-button>
+        </ng-template>
+      </div>
+    </div>
+    <!-- Loading Bar -->
+    <p-progressBar
+      *ngIf="loading$ | async"
+      class="custom"
+      mode="indeterminate"
+    ></p-progressBar>
+  </p-toolbar>
+  <!-- Toolbar Ends -->
+
+  <!-- Sidebar -->
+  <p-sidebar
+    *ngIf="!data.mb"
+    class="overflow-auto flex-column-reverse"
+    [(visible)]="displaySidebar"
+    [blockScroll]="true"
+    position="right"
+  >
+    <ng-container
+      *ngTemplateOutlet="megaMenuTemplate; context: { $implicit: data.mb }"
+    ></ng-container>
+  </p-sidebar>
+
+  <!-- Megamenu Template -->
+  <ng-template #megaMenuTemplate let-mb>
+    <p-megaMenu
+      class="megaMenu-rsp"
+      [ngClass]="{ 'p-mr-2': mb }"
+      [orientation]="mb ? 'horizontal' : 'vertical'"
+      [model]="megaMenuItems"
+    ></p-megaMenu>
+
+    <!-- Login Section -->
+    <!-- <app-button
+      *ngIf="!data.user?.uid; else profileTemplate"
+      [ngClass]="{ 'p-as-start p-mb-2': !mb }"
+      styleClass="p-button-success"
+      label="Login"
+      icon="pi pi-sign-in"
+      routerLink="/login"
+      [isResponsive]="false"
+      (click)="displaySidebar = false"
+    ></app-button>
+    <ng-template #profileTemplate>
+      <app-button
+        [ngClass]="{ 'p-as-start p-mb-2': !mb }"
+        label="Profile"
+        icon="pi pi-user"
+        [isResponsive]="false"
+        (click)="op.toggle($event)"
+      ></app-button>
+    </ng-template> -->
+  </ng-template>
+
+  <!-- Profile Overlay -->
+  <!-- <p-overlayPanel
+    styleClass="profile"
+    showTransitionOptions="0ms"
+    hideTransitionOptions="0ms"
+    appendTo="body"
+    #op
+  >
+    <ng-template pTemplate>
+      <p-card [subheader]="data.user!.displayName">
+        <p-header class="embed-rsp embed-rsp-1x1 p-d-block">
+          <img
+            class="embed-rsp-item"
+            [attr.src]="data.user?.photoURL"
+            [attr.alt]="'Photo of' + data.user?.displayName"
+          />
+        </p-header>
+        {{ data.user?.email }}
+        <p-footer>
+          <app-button
+            styleClass="p-button-danger"
+            label="Logout"
+            icon="pi pi-sign-out"
+            [isResponsive]="false"
+            (click)="logout(op)"
+          ></app-button>
+        </p-footer>
+      </p-card>
+    </ng-template>
+  </p-overlayPanel> -->
+</ng-container>

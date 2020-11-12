@@ -1,0 +1,131 @@
+<ng-container *ngIf="{ me: me$ | async } as global">
+  <ng-container *ngIf="messages$ | async as messages">
+    <p-table
+      class="p-mb-2"
+      #tt
+      [columns]="cols"
+      [value]="messages"
+      [scrollable]="true"
+      dataKey="createdAt"
+      scrollHeight="70vh"
+      [virtualScroll]="true"
+      [virtualRowHeight]="34"
+      [rowTrackBy]="trackByFn"
+      [rowHover]="true"
+      [lazy]="true"
+      styleClass="p-datatable-sm p-datatable-gridlines p-datatable-striped"
+      (onLazyLoad)="lazyLoad(tt)"
+      [totalRecords]="tt.value.length"
+    >
+      <!-- Colgroup -->
+      <ng-template pTemplate="colgroup" let-columns>
+        <col *ngFor="let col of columns" [style.width]="col.width" />
+      </ng-template>
+
+      <!-- Caption -->
+      <ng-template pTemplate="caption">
+        <div class="p-text-capitalize">Chat Zone</div>
+      </ng-template>
+
+      <!-- Header -->
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th *ngFor="let col of columns">
+            {{ col.header }}
+          </th>
+        </tr>
+      </ng-template>
+
+      <!-- Body -->
+      <ng-template pTemplate="body" let-rowData let-columns="columns">
+        <tr style="height: 34px;">
+          <td
+            *ngFor="let col of columns"
+            [ngSwitch]="col.field"
+            class="p-text-nowrap p-text-truncate"
+            [ngClass]="{ server: rowData.from == 'Server' }"
+          >
+            <ng-container *ngSwitchCase="'from'">
+              <span [ngClass]="{ 'me required': global.me?.id === rowData.id }">
+                {{ rowData[col.field] }}
+              </span>
+            </ng-container>
+            <ng-container *ngSwitchCase="'createdAt'">
+              {{ rowData[col.field] | date: 'short' }}
+            </ng-container>
+            <ng-container *ngSwitchDefault>
+              {{ rowData[col.field] }}
+            </ng-container>
+          </td>
+        </tr>
+      </ng-template>
+
+      <!-- Empty -->
+      <ng-template pTemplate="emptymessage" let-columns>
+        <tr>
+          <td [attr.colspan]="columns.length">No records found</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </ng-container>
+
+  <form [formGroup]="webSocketForm" class="p-fluid p-input-filled p-mb-2">
+    <div class="p-field p-col-12 p-d-flex p-flex-column">
+      <div class="p-inputgroup p-ai-center">
+        <input
+          #message
+          pInputText
+          appControl
+          entityName="websocket"
+          id="message"
+          formControlName="message"
+          (keyup.enter)="sendMessage()"
+        />
+
+        <app-button
+          styleClass="p-button-success"
+          label="Submit"
+          icon="pi pi-pencil"
+          [invalid]="webSocketForm.invalid"
+          [cb]="sendMessage.bind(this)"
+        ></app-button>
+      </div>
+      <small id="message-help">{{
+        (message.value.length || 0) + ' / ' + message.maxLength
+      }}</small>
+      <app-form-errors
+        [form]="webSocketForm"
+        controlName="message"
+      ></app-form-errors>
+    </div>
+  </form>
+
+  <ng-container *ngIf="{ clients: (clients$ | async) || [[], 0] } as data">
+    <p-orderList
+      [value]="data.clients[0]"
+      [header]="'Current Users:' + data.clients[1]"
+      [trackBy]="trackByFn"
+    >
+      <ng-template let-client pTemplate="item">
+        <div class="p-d-flex">
+          <img
+            [src]="client.avatar"
+            alt="user avatar"
+            title="user avatar"
+            style="max-width: 50px;"
+          />
+          <div class="p-ml-2">
+            <h3>
+              username:
+              <span [ngClass]="{ 'me required': global.me?.id === client.id }"
+                >{{ client.username }}
+              </span>
+            </h3>
+            <h4>ip: {{ client.ip }}</h4>
+            <p>createdAt: {{ client.createdAt | date: 'short' }}</p>
+          </div>
+        </div>
+      </ng-template>
+    </p-orderList>
+  </ng-container>
+</ng-container>

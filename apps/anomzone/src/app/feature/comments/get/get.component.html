@@ -1,0 +1,115 @@
+<p-card
+  *ngIf="!comment.deletedAt; else deletedTemplate"
+  [id]="id"
+  class="card-flex card-comment p-mb-2"
+  [subheader]="comment.author"
+>
+  <div class="text-content">{{ rowNumber }}. {{ comment.content }}</div>
+  <p-footer class="p-flex-column p-ai-end">
+    <div>
+      <div>
+        Created at:
+        {{ comment.createdAt | date: "h:mm:ss a, MMM d, y" }}
+      </div>
+      <div>
+        Updated at:
+        {{ comment.updatedAt | date: "h:mm:ss a, MMM d, y" }}
+      </div>
+      <div class="p-text-right">
+        ip:
+        {{ comment.ip }}
+      </div>
+    </div>
+    <div>
+      <div class="p-mt-2 p-text-right">
+        <!-- Buttons Start-->
+        <app-button
+          [styleClass]="
+            (showEdit ? 'p-button-help' : 'p-button-info') + ' p-mr-2'
+          "
+          [label]="showEdit ? 'Close' : 'Edit'"
+          [icon]="showEdit ? 'pi pi-minus' : 'pi pi-pencil'"
+          [cb]="toggleEdit.bind(this)"
+        ></app-button>
+        <app-button
+          [styleClass]="showReply ? 'p-button-help' : ''"
+          [label]="showReply ? 'Close' : 'Reply'"
+          [icon]="showReply ? 'pi pi-minus' : 'pi pi-reply'"
+          [cb]="toggleShowReply.bind(this)"
+        ></app-button>
+        <!-- Buttons End -->
+      </div>
+    </div>
+  </p-footer>
+</p-card>
+
+<!-- Edit Comment Starts -->
+<app-comments-update
+  *ngIf="showEdit"
+  appAnchorScroll
+  [rowNumber]="rowNumber"
+  [id]="['comments', 'edit', comment.id].join('-')"
+  class="p-d-block p-mb-2"
+  [comment]="comment"
+  (toggleEdit)="toggleEdit()"
+>
+</app-comments-update>
+<!-- Edit Comment Ends -->
+
+<!-- Reply Starts -->
+<app-replies-create
+  *ngIf="showReply"
+  appAnchorScroll
+  [id]="['comments', 'reply', comment.id].join('-')"
+  [comment]="comment"
+></app-replies-create>
+<!-- Reply Ends -->
+
+<!-- Deleted Comment Starts -->
+<ng-template #deletedTemplate>
+  <p-card [id]="comment.id" class="card-flex p-mb-2" subheader="no name">
+    <div class="text-content">A deleted comment</div>
+  </p-card>
+</ng-template>
+<!-- Deleted Comment Ends -->
+
+<ng-container
+  *ngIf="{
+    repliesSelectList: repliesSelectList$ | async,
+    repliesSelectCreate: repliesSelectCreate$ | async
+  } as data"
+>
+  <!-- Replies Starts -->
+  <ng-container
+    *ngIf="
+      ((data.repliesSelectList && data.repliesSelectList[1]) ||
+        comment.repliesCount!) > 0
+    "
+  >
+    <!-- Replies Show Button Starts -->
+    <app-button
+      class="p-d-flex p-jc-end"
+      [styleClass]="(showReplies ? 'p-button-help' : '') + ' p-mb-2'"
+      [label]="
+        showReplies
+          ? 'Close '
+          : 'Show replies (' +
+            ((data.repliesSelectList && data.repliesSelectList[1]) ||
+              comment.repliesCount!) +
+            ')'
+      "
+      [icon]="showReplies ? 'pi pi-minus' : 'pi pi-list'"
+      [isResponsive]="false"
+      [cb]="toggleShowRelies.bind(this)"
+    ></app-button>
+    <!-- Replies Show Button Ends -->
+
+    <!-- Replies List Starts -->
+    <app-replies-list
+      *ngIf="showReplies"
+      [comment]="comment"
+    ></app-replies-list>
+    <!-- Replies ListEnds -->
+  </ng-container>
+  <!-- Replies Ends -->
+</ng-container>

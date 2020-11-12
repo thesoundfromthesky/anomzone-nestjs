@@ -1,0 +1,30 @@
+<app-comments-create></app-comments-create>
+<ng-container
+  *ngIf="{
+    mb: (mb$ | async) || false,
+    comments: (comments$ | async) || [[], 0],
+    pageEvent: (pageEvent$ | async) || { first: 0, rows: 20, page: 0 }
+  } as data"
+>
+  <ng-container *ngFor="let comment of data.comments[0]; let index = index">
+    <app-comments-get
+      *ngIf="!comment.deletedAt && comment.repliesCount"
+      [id]="['comments', comment.id].join('-')"
+      [comment]="comment"
+      [rowNumber]="data.pageEvent.first + index + 1"
+    ></app-comments-get>
+  </ng-container>
+
+  <!-- Paginator Starts -->
+  <p-paginator
+    styleClass="p-shadow-2"
+    [rows]="data.pageEvent.rows"
+    [first]="data.pageEvent.first"
+    [pageLinkSize]="10"
+    [totalRecords]="data.comments[1]"
+    [showCurrentPageReport]="data.mb"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    (onPageChange)="paginate($event)"
+  ></p-paginator>
+  <!-- Paginator Ends -->
+</ng-container>

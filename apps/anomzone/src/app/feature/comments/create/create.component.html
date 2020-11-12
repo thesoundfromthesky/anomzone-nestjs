@@ -1,0 +1,75 @@
+<p-card class="card-flex p-mb-2" header="Write a comment">
+  <form
+    (focusout)="(true)"
+    [formGroup]="commentsForm"
+    class="p-fluid p-formgrid p-grid p-input-filled"
+  >
+    <div class="p-field p-col-12 p-md-6 p-d-flex p-flex-column">
+      <label for="author" class="required">Author</label>
+      <input
+        #author
+        pInputText
+        appControl
+        entityName="comment"
+        id="author"
+        formControlName="author"
+      />
+      <small id="author-help">{{
+        (author.value.length || 0) + " / " + author.maxLength
+      }}</small>
+      <app-form-errors [form]="commentsForm" controlName="author"></app-form-errors>
+    </div>
+    <div class="p-field p-col-12 p-md-6 p-d-flex p-flex-column">
+      <label for="password" class="required">Password</label>
+      <input
+        #password
+        pInputText
+        appControl
+        entityName="comment"
+        id="password"
+        formControlName="password"
+      />
+      <small id="password-help">{{
+        (password.value.length || 0) + " / " + password.maxLength
+      }}</small>
+      <app-form-errors [form]="commentsForm" controlName="password"></app-form-errors>
+    </div>
+    <div class="p-field p-col-12 p-d-flex p-flex-column flex-1">
+      <label for="content" class="required">Content</label>
+      <textarea
+        #content
+        rows="10"
+        cols="30"
+        [autoResize]="true"
+        pInputTextarea
+        appControl
+        entityName="comment"
+        id="content"
+        formControlName="content"
+      ></textarea>
+      <small id="content-help">{{
+        (content.value.length || 0) + " / " + content.maxLength
+      }}</small>
+      <app-form-errors [form]="commentsForm" controlName="content"></app-form-errors>
+    </div>
+  </form>
+
+  <p-footer class="p-jc-end">
+    <app-button
+      styleClass="p-button-danger p-mr-2"
+      label="Reset"
+      icon="pi pi-refresh"
+      [loading]="true"
+      [cb]="onReset.bind(this)"
+    ></app-button>
+    <app-button
+      styleClass="p-button-success"
+      label="Submit"
+      icon="pi pi-pencil"
+      [delay]="true"
+      [loading]="true"
+      [invalid]="commentsForm.invalid"
+      [cb]="onSubmit.bind(this)"
+    ></app-button>
+  </p-footer>
+</p-card>

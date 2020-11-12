@@ -1,0 +1,28 @@
+<ng-container
+  *ngIf="{
+    mb: (mb$ | async) || false,
+    replies: (replies$ | async) || [[], 0],
+    pageEvent: (pageEvent$ | async) || { first: 0, rows: 20, page: 0 }
+  } as data"
+>
+  <app-replies-get
+    *ngFor="let reply of data.replies[0]; let index = index"
+    [reply]="reply"
+    [comment]="comment"
+    [id]="['replies', reply.id].join('-')"
+    [rowNumber]="1 + data.pageEvent.first + index"
+  ></app-replies-get>
+
+  <!-- Paginator Starts -->
+  <p-paginator
+    styleClass="p-mb-2 p-shadow-2"
+    [rows]="data.pageEvent.rows"
+    [first]="data.pageEvent.first"
+    [pageLinkSize]="10"
+    [totalRecords]="data.replies[1]"
+    [showCurrentPageReport]="data.mb"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    (onPageChange)="paginate($event)"
+  ></p-paginator>
+  <!-- Paginator Ends -->
+</ng-container>
